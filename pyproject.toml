@@ -1,0 +1,60 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "videoscraper"
+version = "0.1.0"
+description = "High-performance video content scraping infrastructure"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [
+    { name = "VideoScraper Team" }
+]
+keywords = ["video", "scraper", "download", "web-scraping", "rust"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "httpx>=0.24",
+    "maturin>=1.4",
+]
+yt = [
+    "yt-dlp>=2023.0",
+]
+
+[project.scripts]
+videoscraper = "videoscraper.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/videoscraper/videoscraper"
+Repository = "https://github.com/videoscraper/videoscraper"
+Documentation = "https://videoscraper.readthedocs.io"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "videoscraper._core"
+strip = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+

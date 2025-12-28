@@ -1,0 +1,100 @@
+[package]
+name = "videoscraper"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance video content scraping infrastructure"
+license = "MIT"
+
+[lib]
+name = "videoscraper"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+# Cloud storage features
+s3 = ["aws-sdk-s3", "aws-config"]
+gcs = ["cloud-storage"]
+full = ["s3", "gcs"]
+
+[dependencies]
+# Python bindings
+pyo3 = { version = "0.20", features = ["extension-module", "abi3-py38"] }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# HTTP client
+reqwest = { version = "0.11", default-features = false, features = ["json", "stream", "cookies", "gzip", "brotli", "deflate", "rustls-tls"] }
+
+# HTML parsing
+scraper = "0.18"
+select = "0.6"
+
+# JSON/data parsing
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# URL handling
+url = "2.5"
+
+# Regex for pattern matching
+regex = "1.10"
+
+# Rate limiting
+governor = "0.6"
+
+# Retry logic
+backoff = { version = "0.4", features = ["tokio"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Async utilities
+futures = "0.3"
+async-channel = "2.1"
+
+# File hashing
+sha2 = "0.10"
+hex = "0.4"
+
+# AWS S3 support (optional)
+aws-sdk-s3 = { version = "1.11", optional = true }
+aws-config = { version = "1.1", optional = true }
+
+# GCS support (optional)
+cloud-storage = { version = "0.11", optional = true }
+
+# Time utilities
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID for unique identifiers
+uuid = { version = "1.6", features = ["v4"] }
+
+# Bytes for efficient byte handling
+bytes = "1.5"
+
+# Dashmap for concurrent hashmap
+dashmap = "5.5"
+
+# Crossbeam for concurrent primitives
+crossbeam = "0.8"
+
+# Async trait for trait async methods
+async-trait = "0.1"
+
+# Num CPUs for optimal thread count
+num_cpus = "1.16"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.9"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
