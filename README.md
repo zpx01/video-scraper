@@ -3,9 +3,7 @@
 **High-performance video content scraping infrastructure built with Rust and Python.** 
 **Built with Claude :)**
 
-VideoScraper is designed for large-scale video collection at petabyte scale. 
-
-The core infrastructure is written in Rust for maximum performance, with easy-to-use Python APIs for building scraping pipelines.
+VideoScraper is designed for large-scale video collection at petabyte scale. The core infrastructure is written in Rust for maximum performance, with easy-to-use Python APIs for building scraping pipelines.
 
 ## Features
 
