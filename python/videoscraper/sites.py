@@ -135,6 +135,8 @@ class YouTubeScraper:
         extract_audio: bool = False,
         cookies_file: Optional[str] = None,
         rate_limit: Optional[str] = None,
+        proxy: Optional[str] = None,
+        user_agent: Optional[str] = None,
     ):
         """
         Initialize the YouTube scraper.
@@ -146,6 +148,8 @@ class YouTubeScraper:
             extract_audio: If True, extract audio only
             cookies_file: Path to cookies file for authenticated downloads
             rate_limit: Rate limit for downloads (e.g., '50M' for 50 MB/s)
+            proxy: Proxy URL (e.g., 'http://user:pass@host:port')
+            user_agent: Custom user agent string
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -155,6 +159,8 @@ class YouTubeScraper:
         self.extract_audio = extract_audio
         self.cookies_file = cookies_file
         self.rate_limit = rate_limit
+        self.proxy = proxy
+        self.user_agent = user_agent
         
         # Check if yt-dlp is available
         self._ytdlp_path = shutil.which("yt-dlp")
@@ -216,6 +222,12 @@ class YouTubeScraper:
         if self.rate_limit:
             opts["ratelimit"] = self._parse_rate_limit(self.rate_limit)
         
+        if self.proxy:
+            opts["proxy"] = self.proxy
+        
+        if self.user_agent:
+            opts["http_headers"] = {"User-Agent": self.user_agent}
+        
         return opts
     
     def _parse_rate_limit(self, rate: str) -> int:
@@ -248,7 +260,15 @@ class YouTubeScraper:
         """Get info using yt-dlp Python API."""
         import yt_dlp
         
-        with yt_dlp.YoutubeDL({"quiet": True, "extract_flat": False}) as ydl:
+        opts = {"quiet": True, "extract_flat": False}
+        
+        if self.proxy:
+            opts["proxy"] = self.proxy
+        
+        if self.user_agent:
+            opts["http_headers"] = {"User-Agent": self.user_agent}
+        
+        with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
         
         return self._parse_info(info)
@@ -259,8 +279,15 @@ class YouTubeScraper:
             self._ytdlp_path,
             "--dump-json",
             "--no-download",
-            url,
         ]
+        
+        if self.proxy:
+            cmd.extend(["--proxy", self.proxy])
+        
+        if self.user_agent:
+            cmd.extend(["--user-agent", self.user_agent])
+        
+        cmd.append(url)
         
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
@@ -380,6 +407,12 @@ class YouTubeScraper:
         if self.rate_limit:
             cmd.extend(["-r", self.rate_limit])
         
+        if self.proxy:
+            cmd.extend(["--proxy", self.proxy])
+        
+        if self.user_agent:
+            cmd.extend(["--user-agent", self.user_agent])
+        
         cmd.append(url)
         
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -468,7 +501,7 @@ class YouTubeScraper:
         search_url = f"ytsearch{max_results}:{query}"
         return self.download_playlist(search_url)
 
-
+# Not implemented
 class VimeoScraper(YouTubeScraper):
     """
     Vimeo-optimized scraper using yt-dlp.
@@ -482,7 +515,7 @@ class VimeoScraper(YouTubeScraper):
     def can_handle(self, url: str) -> bool:
         return "vimeo.com" in url
 
-
+# Not implemented
 class TwitterScraper(YouTubeScraper):
     """
     Twitter/X video scraper using yt-dlp.
@@ -496,7 +529,7 @@ class TwitterScraper(YouTubeScraper):
     def can_handle(self, url: str) -> bool:
         return "twitter.com" in url or "x.com" in url
 
-
+# Not implemented
 class TikTokScraper(YouTubeScraper):
     """
     TikTok video scraper using yt-dlp.

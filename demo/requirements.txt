@@ -1,0 +1,20 @@
+# Requirements for running the demo scripts
+# Install with: pip install -r demo/requirements.txt
+
+# Core dependencies (installed with videoscraper)
+# None required - videoscraper bundles its dependencies
+
+# Optional: YouTube support
+yt-dlp>=2023.0
+
+# Optional: GCP deployment testing
+google-cloud-pubsub>=2.18.0
+google-cloud-storage>=2.10.0
+
+# Optional: Visualization for benchmarks
+matplotlib>=3.7.0
+
+# Development/testing
+httpx>=0.24.0
+pytest>=7.0.0
+

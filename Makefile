@@ -102,6 +102,30 @@ example:
 	@echo "Running simple download example..."
 	python examples/simple_download.py
 
+# Demo commands
+demo: dev
+	@echo "Running quickstart demo..."
+	python demo/quickstart.py
+
+demo-verify: dev
+	@echo "Running verification tests..."
+	python demo/local_verification.py
+
+demo-perf: dev
+	@echo "Running performance benchmark..."
+	python demo/performance_demo.py --videos 5 --workers 4
+
+demo-gcp:
+	@echo "Starting GCP deployment..."
+	@echo "Make sure GCP_PROJECT_ID is set"
+	cd deploy/gcp && ./demo_quick_deploy.sh
+
+# Local residential proxy for testing
+local-proxy:
+	@echo "🏠 Starting local residential proxy..."
+	@echo "Your home IP will be used for scraping!"
+	python deploy/proxy/simple_proxy_server.py
+
 # Help
 help:
 	@echo "VideoScraper Makefile"
@@ -123,5 +147,10 @@ help:
 	@echo "  docs          Generate documentation"
 	@echo "  setup         Setup development environment"
 	@echo "  example       Run example script"
+	@echo "  demo          Run quickstart demo"
+	@echo "  demo-verify   Run verification tests"
+	@echo "  demo-perf     Run performance benchmark"
+	@echo "  demo-gcp      Deploy demo to GCP"
+	@echo "  local-proxy   Start local residential proxy for testing"
 	@echo "  help          Show this help message"
 

@@ -315,6 +315,68 @@ VideoScraper is optimized for petabyte-scale collection:
    config = BatchConfig(checkpoint_file="checkpoint.json")
    ```
 
+## GCP Deployment
+
+Deploy VideoScraper to Google Cloud Run for scalable video scraping:
+
+### Quick Deploy
+
+```bash
+# Set your project
+export GCP_PROJECT_ID="your-project-id"
+
+# Build and deploy
+gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/videoscraper-demo .
+gcloud run deploy videoscraper-demo \
+    --image gcr.io/$GCP_PROJECT_ID/videoscraper-demo \
+    --region us-central1 \
+    --memory 2Gi \
+    --allow-unauthenticated \
+    --set-env-vars "GCS_BUCKET=${GCP_PROJECT_ID}-videos"
+```
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/scrape` | POST | Download a single video |
+| `/crawl` | POST | Discover and download related videos |
+
+### Example: Scrape a Video
+
+```bash
+curl -X POST https://your-service.run.app/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://youtube.com/watch?v=VIDEO_ID"}'
+```
+
+### Example: Crawl Related Videos
+
+```bash
+curl -X POST https://your-service.run.app/crawl \
+  -H "Content-Type: application/json" \
+  -d '{"seed_url": "https://youtube.com/watch?v=VIDEO_ID", "max_videos": 10, "download": true}'
+```
+
+### Local Residential Proxy
+
+YouTube blocks datacenter IPs. Use your home IP for testing:
+
+```bash
+# Terminal 1: Start local proxy
+make local-proxy
+
+# Terminal 2: Expose via ngrok
+ngrok tcp 8888
+
+# Update Cloud Run with ngrok URL
+gcloud run services update videoscraper-demo \
+    --set-env-vars "PROXY_PROVIDER=custom,PROXY_HOST=0.tcp.ngrok.io,PROXY_PORT=12345,PROXY_USERNAME=videoscraper,PROXY_PASSWORD=testpass123"
+```
+
+See [GCP Demo Guide](demo/GCP_DEMO_GUIDE.md) for full deployment instructions.
+
 ## License
 
 MIT License - see LICENSE for details.
